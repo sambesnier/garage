@@ -10,7 +10,7 @@ public class MainController {
 	public MainController() {		
 		_mainView = new MainView();
 		
-		
+		_bdd.getInstance();
 		
 		_mainView.setVisible(true);
 	}

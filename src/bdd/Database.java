@@ -14,10 +14,9 @@ public class Database {
 	private Database() {
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
-			System.out.println("Connexion réussie");
 			connexion();
 		} catch (ClassNotFoundException e) {
-			System.out.println("Classe non trouvée");
+			System.out.println("Classe non trouv�e");
 		}
 	}
 	
@@ -31,22 +30,23 @@ public class Database {
 	public void connexion() {
 		String url = "jdbc:mysql://localhost:3306/gestion_garage";
 		String utilisateur = "root";
-		String motDePasse = "1234";
+		String motDePasse = "";
 		try {
 		    set_connexion((Connection) DriverManager.getConnection( url, utilisateur, motDePasse ));
 		    /* Ici, nous placerons nos requêtes vers la BDD */
 		    /* ... */
+		    System.out.println("connexion r�ussie");
 
 		} catch ( SQLException e ) {
 		    /* Gérer les éventuelles erreurs ici */
 		}
 	}
 
-	public Connection get_connexion() {
+	private Connection get_connexion() {
 		return _connexion;
 	}
 
-	public void set_connexion(Connection _connexion) {
+	private void set_connexion(Connection _connexion) {
 		this._connexion = _connexion;
 	}
 }
