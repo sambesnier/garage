@@ -28,7 +28,6 @@ import javax.swing.JTextField;
 import bdd.Database;
 
 public class MainView extends JFrame {
-	private JPanel _formContainer = new JPanel();
 	private JPanel _clientContainer = new JPanel();
 	private JScrollPane _scrollTable;
 	private JTabbedPane _tabbedPane = new JTabbedPane();
@@ -44,11 +43,21 @@ public class MainView extends JFrame {
 	private JButton _refreshClientBtn = new JButton("Actualiser");
 	private JTable _tableClients;
 	
+	// factures panel
 	private JPanel _facturesContainer = new JPanel();
-	private JLabel _factNomLabel = new JLabel("Nom : ");
-	private JTextField _factNomTF = new JTextField();
-	private JLabel _factPrestLabel = new JLabel("Ajouter une prestation");
-	private JComboBox _factPrestCombo = new JComboBox();
+	private JLabel _factTitreLabel = new JLabel("Nouvelle facture");
+	private JButton _factTabClients = new JButton("clients");
+	private JButton _factTabVoitures = new JButton("voitures");
+	private JButton _factTabPrestas = new JButton("prestas");
+	private JScrollPane _factClientsScroll;
+	private JScrollPane _factVoituresScroll;
+	private JScrollPane _factPrestasScroll;
+	private JButton _factNewCar = new JButton("Ajouter voiture");
+	private JButton _factAddPresta = new JButton("Ajouter prestation");
+	private JButton _factDelPresta = new JButton("Supprimer prestation");
+	private JLabel _factTotal = new JLabel("Total : ");
+	private JButton _factDevisPdf = new JButton("Devis PDF");
+	private JButton _factRdvBtn = new JButton("Prendre rdv");
 	
 	private String _email;
 	
@@ -58,7 +67,7 @@ public class MainView extends JFrame {
 		this.setSize(800, 600);
 		this.setLocationRelativeTo(null);
 		initClientsComponents();
-		//initFacturesComponents();
+		initFacturesComponents();
 		this.setContentPane(_tabbedPane);
 		//this.pack();
 	}
@@ -76,22 +85,22 @@ public class MainView extends JFrame {
 		
 		gc.ipady = gc.anchor = GridBagConstraints.CENTER;
 		
-		gc.gridx = 0;
-		gc.gridy = 0;
-		gc.weightx = 0.1;
-		_clientContainer.add(_nomLabel, gc);
-		
-		gc.gridx = 1;
-		gc.gridy = 0;
-		gc.gridwidth = 2;
-		gc.weightx = 0.5;
-		_clientContainer.add(_nomTF, gc);
-		
-		gc.gridx = 3;
-		gc.gridy = 0;
-		gc.gridwidth = 1;
-		gc.weightx = 0.2;
-		_clientContainer.add(_searchBtn, gc);
+//		gc.gridx = 0;
+//		gc.gridy = 0;
+//		gc.weightx = 0.1;
+//		_clientContainer.add(_nomLabel, gc);
+//		
+//		gc.gridx = 1;
+//		gc.gridy = 0;
+//		gc.gridwidth = 2;
+//		gc.weightx = 0.5;
+//		_clientContainer.add(_nomTF, gc);
+//		
+//		gc.gridx = 3;
+//		gc.gridy = 0;
+//		gc.gridwidth = 1;
+//		gc.weightx = 0.2;
+//		_clientContainer.add(_searchBtn, gc);
 		
 		/*gc.gridx = 4;
 		gc.gridy = 0;
@@ -252,34 +261,95 @@ public class MainView extends JFrame {
 	private void initFacturesComponents() {
 		_facturesContainer.setLayout(new GridBagLayout());
 		GridBagConstraints gc = new GridBagConstraints();
-		gc.fill = GridBagConstraints.HORIZONTAL;
+		
+		gc.fill = GridBagConstraints.BOTH;
+		
 		gc.insets = new Insets(5, 5, 5, 5);
-		gc.gridy = gc.anchor = GridBagConstraints.FIRST_LINE_START;
-		gc.weightx = 0.2;
-		gc.weighty = 1;
+		
+		gc.ipady = gc.anchor = GridBagConstraints.CENTER;
+		
 		gc.gridx = 0;
 		gc.gridy = 0;
-		_facturesContainer.add(new JLabel("Nom : "), gc);
-		gc.insets = new Insets(5, 5, 5, 200);
-		gc.fill = GridBagConstraints.HORIZONTAL;
-		gc.weightx = 0.6;
-		gc.gridx = 1;
-		gc.gridy = 0;
-		gc.gridwidth = 2;
-		_facturesContainer.add(new JTextField(), gc);
-		gc.insets = new Insets(5, 5, 5, 5);
-		gc.weightx = 0.2;
-		gc.weighty = 1;
+		gc.weightx = 0.8;
+		_facturesContainer.add(_factTitreLabel, gc);
+		
+//		gc.fill = GridBagConstraints.HORIZONTAL;
+//		gc.ipady = gc.anchor = GridBagConstraints.FIRST_LINE_START;
+//		gc.gridx = 4;
+//		gc.gridy = 1;
+//		gc.gridheight = 1;
+//		gc.gridwidth = 1;
+//		gc.weightx = 0.2;
+//		gc.weighty = 0;
+//		_clientContainer.add(_addClientBtn, gc);
+		
+		//gc.fill = GridBagConstraints.BOTH;
 		gc.gridx = 0;
 		gc.gridy = 1;
-		_facturesContainer.add(new JLabel("Prénom : "), gc);
-		gc.insets = new Insets(5, 5, 5, 200);
-		gc.fill = GridBagConstraints.HORIZONTAL;
-		gc.weightx = 0.6;
-		gc.gridx = 1;
-		gc.gridy = 1;
-		gc.gridwidth = 2;
-		_facturesContainer.add(new JTextField(), gc);
+		gc.gridheight = 2;
+		gc.gridwidth = 3;
+		gc.weightx = 0.2;
+		gc.weighty = 0.2;
+		_facturesContainer.add(_factTabClients, gc);
+		
+		gc.gridx = 0;
+		gc.gridy = 3;
+		gc.gridheight = 2;
+		gc.gridwidth = 3;
+		gc.weightx = 0.2;
+		gc.weighty = 0.2;
+		_facturesContainer.add(_factTabVoitures, gc);
+		
+		gc.gridx = 4;
+		gc.gridy = 3;
+		gc.gridheight = 1;
+		gc.gridwidth = 1;
+		gc.weightx = 0.2;
+		_facturesContainer.add(_factNewCar, gc);
+		
+		gc.gridx = 0;
+		gc.gridy = 5;
+		gc.gridheight = 2;
+		gc.gridwidth = 3;
+		gc.weightx = 0.2;
+		gc.weighty = 0.3;
+		_facturesContainer.add(_factTabPrestas, gc);
+		
+		gc.gridx = 4;
+		gc.gridy = 5;
+		gc.gridheight = 1;
+		gc.gridwidth = 1;
+		gc.weightx = 0.2;
+		_facturesContainer.add(_factAddPresta, gc);
+		
+		gc.gridx = 4;
+		gc.gridy = 6;
+		gc.gridheight = 1;
+		gc.gridwidth = 1;
+		gc.weightx = 0.3;
+		_facturesContainer.add(_factDelPresta, gc);
+		
+		gc.gridx = 0;
+		gc.gridy = 7;
+		gc.gridheight = 1;
+		gc.gridwidth = 1;
+		gc.weightx = 0.3;
+		_facturesContainer.add(_factTotal, gc);
+		
+		gc.gridx = 4;
+		gc.gridy = 8;
+		gc.gridheight = 1;
+		gc.gridwidth = 1;
+		gc.weightx = 0.2;
+		gc.weighty = 0;
+		_facturesContainer.add(_factDevisPdf, gc);
+		
+		gc.gridx = 4;
+		gc.gridy = 9;
+		gc.gridheight = 1;
+		gc.gridwidth = 1;
+		gc.weightx = 0.2;
+		_facturesContainer.add(_factRdvBtn, gc);
 		
 		_tabbedPane.addTab("Factures", _facturesContainer);
 	}
