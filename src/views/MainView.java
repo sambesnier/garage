@@ -9,6 +9,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
+import java.awt.event.ContainerEvent;
+import java.awt.event.ContainerListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -45,6 +49,8 @@ public class MainView extends JFrame {
 	private JTextField _factNomTF = new JTextField();
 	private JLabel _factPrestLabel = new JLabel("Ajouter une prestation");
 	private JComboBox _factPrestCombo = new JComboBox();
+	
+	private String _email;
 	
 	public MainView() {
 		this.setTitle("Garage Manager");
@@ -87,11 +93,11 @@ public class MainView extends JFrame {
 		gc.weightx = 0.2;
 		_clientContainer.add(_searchBtn, gc);
 		
-		gc.gridx = 4;
+		/*gc.gridx = 4;
 		gc.gridy = 0;
 		gc.gridwidth = 1;
 		gc.weightx = 0.2;
-		_clientContainer.add(_refreshClientBtn, gc);
+		_clientContainer.add(_refreshClientBtn, gc);*/
 		
 		gc.gridx = 0;
 		gc.gridy = 1;
@@ -155,6 +161,40 @@ public class MainView extends JFrame {
 			}
 		});
 		
+		_tableClients.addMouseListener(new MouseListener() {
+			
+			@Override
+			public void mouseReleased(MouseEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void mousePressed(MouseEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void mouseExited(MouseEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				if (_tableClients.getSelectedRow() != -1) {
+					_email = _tableClients.getValueAt(_tableClients.getSelectedRow(), 2).toString();
+				}
+			}
+		});
+		
 		_addClientBtn.addActionListener(new ActionListener() {			
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -162,10 +202,39 @@ public class MainView extends JFrame {
 			}
 		});
 		
-		_refreshClientBtn.addActionListener(new ActionListener() {			
+		_delClientBtn.addActionListener(new ActionListener() {			
 			@Override
-			public void actionPerformed(ActionEvent e) {
-				refreshTable();
+			public void actionPerformed(ActionEvent e) {				
+				if (_tableClients.getSelectedRow() != -1) {
+					String email = _tableClients.getValueAt(_tableClients.getSelectedRow(), 2).toString();
+					Database.getInstance().deleteClient(email);
+					refreshTable();
+				}
+			}
+		});
+		
+		_editclientBtn.addActionListener(new ActionListener() {			
+			@Override
+			public void actionPerformed(ActionEvent e) {				
+				if (_tableClients.getSelectedRow() != -1) {
+					String email = _tableClients.getValueAt(_tableClients.getSelectedRow(), 2).toString();
+					String nom = _tableClients.getValueAt(_tableClients.getSelectedRow(), 0).toString();
+					String prenom = _tableClients.getValueAt(_tableClients.getSelectedRow(), 1).toString();
+					int numVoie = Integer.parseInt(_tableClients.getValueAt(_tableClients.getSelectedRow(), 3).toString());
+					String voie = _tableClients.getValueAt(_tableClients.getSelectedRow(), 4).toString();
+					int codePostal = Integer.parseInt(_tableClients.getValueAt(_tableClients.getSelectedRow(), 5).toString().toString());
+					String ville = _tableClients.getValueAt(_tableClients.getSelectedRow(), 6).toString();
+					Database.getInstance().updateClient(
+							nom, 
+							prenom, 
+							_email, 
+							numVoie, 
+							voie, 
+							codePostal, 
+							ville, 
+							email);;
+					refreshTable();
+				}
 			}
 		});
 	}

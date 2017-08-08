@@ -133,4 +133,92 @@ public class Database {
 		
 		return model;
 	}
+	
+	public void deleteClient(String email) {
+		try {
+			String clientId = "SELECT id_client from clients WHERE email = ?";
+			String delAdresse = "DELETE from adresses WHERE client = ?";
+			String delClient = "DELETE from clients WHERE email = ?";
+			
+			_connexion.setAutoCommit(false);
+			PreparedStatement prst = _connexion.prepareStatement(clientId);
+			prst.setString(1, email);
+			prst.execute();
+			ResultSet rs = prst.executeQuery();
+			rs.next();
+			long id = rs.getLong("id_client");
+			
+			PreparedStatement prst2 = _connexion.prepareStatement(delAdresse);
+			prst2.setLong(1, id);
+			prst2.execute();
+			
+			PreparedStatement prst3 = _connexion.prepareStatement(delClient);
+			prst3.setString(1, email);
+			prst3.execute();
+			
+			_connexion.commit();
+			
+			prst.close();
+			prst2.close();
+			prst3.close();
+		} catch (SQLException e) {
+			try {
+				e.printStackTrace();
+				_connexion.rollback();
+			} catch (SQLException e1) {
+				e1.printStackTrace();
+			}
+		}
+	}
+	
+	public void updateClient(
+			String nom, 
+			String prenom,
+			String email,
+			int numVoie,
+			String voie,
+			int codePostal,
+			String ville,
+			String newEmail) {
+		String clientId = "SELECT id_client from clients WHERE email = ?";
+		String updateClient = "UPDATE clients SET nom = ?, prenom = ?, email = ? WHERE email = ?";
+		String updateAdresse = "UPDATE adresses SET num_voie = ?, voie = ?, code_postal = ?, ville = ? WHERE client = ?";
+		try {
+			_connexion.setAutoCommit(false);
+			PreparedStatement prst = _connexion.prepareStatement(updateClient);
+			prst.setString(1, nom);
+			prst.setString(2, prenom);
+			prst.setString(3, newEmail);
+			prst.setString(4, email);
+			prst.execute();
+
+			PreparedStatement prstId = _connexion.prepareStatement(clientId);
+			prstId.setString(1, email);
+			prstId.execute();
+			ResultSet rs = prstId.executeQuery();
+			rs.next();
+			long id = rs.getLong("id_client");
+			
+			PreparedStatement prst2 = _connexion.prepareStatement(updateAdresse);
+			prst2.setInt(1, numVoie);
+			prst2.setString(2, voie);
+			prst2.setInt(3, codePostal);
+			prst2.setString(4, ville);
+			prst2.setLong(5, id);
+			prst2.execute();
+			
+			_connexion.commit();
+			
+			prst.close();
+			prst2.close();
+			prstId.close();
+		} catch (SQLException e) {
+			try {
+				e.printStackTrace();
+				_connexion.rollback();
+			} catch (SQLException e1) {
+				e1.printStackTrace();
+			}
+		}
+	}
 }
