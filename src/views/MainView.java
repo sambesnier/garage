@@ -283,7 +283,7 @@ public class MainView extends JFrame {
 //		gc.weighty = 0;
 //		_clientContainer.add(_addClientBtn, gc);
 		
-		//gc.fill = GridBagConstraints.BOTH;
+		gc.fill = GridBagConstraints.BOTH;
 		gc.gridx = 0;
 		gc.gridy = 1;
 		gc.gridheight = 2;
@@ -300,6 +300,8 @@ public class MainView extends JFrame {
 		gc.weighty = 0.2;
 		_facturesContainer.add(_factTabVoitures, gc);
 		
+		gc.fill = GridBagConstraints.HORIZONTAL;
+		gc.ipady = gc.anchor = GridBagConstraints.FIRST_LINE_START;
 		gc.gridx = 4;
 		gc.gridy = 3;
 		gc.gridheight = 1;
@@ -307,6 +309,7 @@ public class MainView extends JFrame {
 		gc.weightx = 0.2;
 		_facturesContainer.add(_factNewCar, gc);
 		
+		gc.fill = GridBagConstraints.BOTH;
 		gc.gridx = 0;
 		gc.gridy = 5;
 		gc.gridheight = 2;
@@ -315,18 +318,22 @@ public class MainView extends JFrame {
 		gc.weighty = 0.3;
 		_facturesContainer.add(_factTabPrestas, gc);
 		
+		gc.fill = GridBagConstraints.HORIZONTAL;
+		gc.ipady = gc.anchor = GridBagConstraints.FIRST_LINE_START;
 		gc.gridx = 4;
 		gc.gridy = 5;
 		gc.gridheight = 1;
 		gc.gridwidth = 1;
 		gc.weightx = 0.2;
+		gc.weighty = 0;
 		_facturesContainer.add(_factAddPresta, gc);
 		
 		gc.gridx = 4;
 		gc.gridy = 6;
 		gc.gridheight = 1;
 		gc.gridwidth = 1;
-		gc.weightx = 0.3;
+		gc.weightx = 0.2;
+		gc.weighty = 0;
 		_facturesContainer.add(_factDelPresta, gc);
 		
 		gc.gridx = 0;
