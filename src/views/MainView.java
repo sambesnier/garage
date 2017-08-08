@@ -4,6 +4,9 @@ import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.ScrollPane;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -21,9 +24,15 @@ public class MainView extends JFrame {
 	private JPanel _clientContainer = new JPanel();
 	private JScrollPane _scrollTable;
 	private JTabbedPane _tabbedPane = new JTabbedPane();
-	private JLabel _labelNom = new JLabel("Nom : ");
+	private Dimension _textFieldSize = new Dimension(Integer.MAX_VALUE, 27);
+	
+	// Client panel
+	private JLabel _nomLabel = new JLabel("Nom : ");
 	private JTextField _nomTF = new JTextField();
 	private JButton _searchBtn = new JButton("Rechercher");
+	private JButton _addClientBtn = new JButton("Ajouter");
+	private JButton _editclientBtn = new JButton("Modifier");
+	private JButton _delClientBtn = new JButton("Supprimer");
 	private JTable _tableClients = new JTable(10, 10);
 	
 	private JPanel _facturesContainer = new JPanel();
@@ -35,29 +44,84 @@ public class MainView extends JFrame {
 	public MainView() {
 		this.setTitle("Garage Manager");
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		//this.setSize(800, 600);
-		//this.setLocationRelativeTo(null);
+		this.setSize(800, 600);
+		this.setLocationRelativeTo(null);
 		initClientsComponents();
-		initFacturesComponents();
+		//initFacturesComponents();
 		this.setContentPane(_tabbedPane);
-		this.pack();
+		//this.pack();
 	}
 	
 	private void initClientsComponents() {
-		_formContainer.setLayout(new BoxLayout(_formContainer, BoxLayout.LINE_AXIS));
-		_clientContainer.setLayout(new BoxLayout(_clientContainer, BoxLayout.PAGE_AXIS));
+		_clientContainer.setLayout(new GridBagLayout());
 		
-		_formContainer.add(_labelNom);
-		_formContainer.add(_nomTF);
-		_formContainer.add(_searchBtn);
-		_formContainer.setMaximumSize(new Dimension(400, _nomTF.getPreferredSize().height + 10));
+		GridBagConstraints gc = new GridBagConstraints();
 		
-		_clientContainer.add(_formContainer);
-		_scrollTable = new JScrollPane(_tableClients);
-		_scrollTable.setPreferredSize(new Dimension(800, 300));
-		_clientContainer.add(_scrollTable);
+		gc.fill = GridBagConstraints.BOTH;
+		
+		gc.insets = new Insets(5, 5, 5, 5);
+		
+		gc.ipady = gc.anchor = GridBagConstraints.CENTER;
+		
+		gc.gridx = 0;
+		gc.gridy = 0;
+		gc.weightx = 0.1;
+		_clientContainer.add(_nomLabel, gc);
+		
+		gc.gridx = 1;
+		gc.gridy = 0;
+		gc.gridwidth = 2;
+		gc.weightx = 0.5;
+		_clientContainer.add(_nomTF, gc);
+		
+		gc.gridx = 3;
+		gc.gridy = 0;
+		gc.gridwidth = 1;
+		gc.weightx = 0.2;
+		_clientContainer.add(_searchBtn, gc);
+		
+		gc.gridx = 0;
+		gc.gridy = 1;
+		gc.gridwidth = 4;
+		gc.gridheight = 7;
+		gc.weightx = 0.8;
+		gc.weighty = 0.9;
+		_clientContainer.add(new JButton("Test"), gc);
+		
+		gc.fill = GridBagConstraints.HORIZONTAL;
+		gc.ipady = gc.anchor = GridBagConstraints.FIRST_LINE_START;
+		gc.gridx = 4;
+		gc.gridy = 1;
+		gc.gridheight = 1;
+		gc.gridwidth = 1;
+		gc.weightx = 0.2;
+		gc.weighty = 0;
+		_clientContainer.add(_addClientBtn, gc);
+		
+		gc.gridx = 4;
+		gc.gridy = 2;
+		gc.gridheight = 1;
+		gc.gridwidth = 1;
+		gc.weightx = 0.2;
+		gc.weighty = 0;
+		_clientContainer.add(_editclientBtn, gc);
+		
+		gc.gridx = 4;
+		gc.gridy = 3;
+		gc.gridheight = 1;
+		gc.gridwidth = 1;
+		gc.weightx = 0.2;
+		gc.weighty = 0;
+		_clientContainer.add(_delClientBtn, gc);
 		
 		_tabbedPane.addTab("Clients", _clientContainer);
+		AddClient addClientDialog = new AddClient(this, "Ajouter un client", true);
+		_addClientBtn.addActionListener(new ActionListener() {			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				addClientDialog.setVisible(true);
+			}
+		});
 	}
 	
 	private void initFacturesComponents() {
@@ -65,14 +129,30 @@ public class MainView extends JFrame {
 		GridBagConstraints gc = new GridBagConstraints();
 		gc.fill = GridBagConstraints.HORIZONTAL;
 		gc.insets = new Insets(5, 5, 5, 5);
-		gc.ipady = gc.anchor = GridBagConstraints.CENTER;
-		gc.weightx = 6;
-		gc.weighty = 6;
+		gc.gridy = gc.anchor = GridBagConstraints.FIRST_LINE_START;
+		gc.weightx = 0.2;
+		gc.weighty = 1;
 		gc.gridx = 0;
 		gc.gridy = 0;
 		_facturesContainer.add(new JLabel("Nom : "), gc);
+		gc.insets = new Insets(5, 5, 5, 200);
+		gc.fill = GridBagConstraints.HORIZONTAL;
+		gc.weightx = 0.6;
 		gc.gridx = 1;
 		gc.gridy = 0;
+		gc.gridwidth = 2;
+		_facturesContainer.add(new JTextField(), gc);
+		gc.insets = new Insets(5, 5, 5, 5);
+		gc.weightx = 0.2;
+		gc.weighty = 1;
+		gc.gridx = 0;
+		gc.gridy = 1;
+		_facturesContainer.add(new JLabel("Prénom : "), gc);
+		gc.insets = new Insets(5, 5, 5, 200);
+		gc.fill = GridBagConstraints.HORIZONTAL;
+		gc.weightx = 0.6;
+		gc.gridx = 1;
+		gc.gridy = 1;
 		gc.gridwidth = 2;
 		_facturesContainer.add(new JTextField(), gc);
 		
