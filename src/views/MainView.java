@@ -7,6 +7,8 @@ import java.awt.Insets;
 import java.awt.ScrollPane;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
 
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -18,6 +20,8 @@ import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+
+import bdd.Database;
 
 public class MainView extends JFrame {
 	private JPanel _formContainer = new JPanel();
@@ -33,7 +37,8 @@ public class MainView extends JFrame {
 	private JButton _addClientBtn = new JButton("Ajouter");
 	private JButton _editclientBtn = new JButton("Modifier");
 	private JButton _delClientBtn = new JButton("Supprimer");
-	private JTable _tableClients = new JTable(10, 10);
+	private JButton _refreshClientBtn = new JButton("Actualiser");
+	private JTable _tableClients;
 	
 	private JPanel _facturesContainer = new JPanel();
 	private JLabel _factNomLabel = new JLabel("Nom : ");
@@ -53,6 +58,8 @@ public class MainView extends JFrame {
 	}
 	
 	private void initClientsComponents() {
+		fillTable();
+		
 		_clientContainer.setLayout(new GridBagLayout());
 		
 		GridBagConstraints gc = new GridBagConstraints();
@@ -80,13 +87,19 @@ public class MainView extends JFrame {
 		gc.weightx = 0.2;
 		_clientContainer.add(_searchBtn, gc);
 		
+		gc.gridx = 4;
+		gc.gridy = 0;
+		gc.gridwidth = 1;
+		gc.weightx = 0.2;
+		_clientContainer.add(_refreshClientBtn, gc);
+		
 		gc.gridx = 0;
 		gc.gridy = 1;
 		gc.gridwidth = 4;
 		gc.gridheight = 7;
 		gc.weightx = 0.8;
 		gc.weighty = 0.9;
-		_clientContainer.add(new JButton("Test"), gc);
+		_clientContainer.add(_scrollTable, gc);
 		
 		gc.fill = GridBagConstraints.HORIZONTAL;
 		gc.ipady = gc.anchor = GridBagConstraints.FIRST_LINE_START;
@@ -116,12 +129,55 @@ public class MainView extends JFrame {
 		
 		_tabbedPane.addTab("Clients", _clientContainer);
 		AddClient addClientDialog = new AddClient(this, "Ajouter un client", true);
+		addClientDialog.addComponentListener(new ComponentListener() {
+			
+			@Override
+			public void componentShown(ComponentEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void componentResized(ComponentEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void componentMoved(ComponentEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void componentHidden(ComponentEvent e) {
+				refreshTable();
+			}
+		});
+		
 		_addClientBtn.addActionListener(new ActionListener() {			
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				addClientDialog.setVisible(true);
 			}
 		});
+		
+		_refreshClientBtn.addActionListener(new ActionListener() {			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				refreshTable();
+			}
+		});
+	}
+	
+	private void fillTable() {		
+		_tableClients = new JTable();
+		refreshTable();
+		_scrollTable = new JScrollPane(_tableClients);
+	}
+	
+	private void refreshTable() {
+		_tableClients.setModel(Database.getInstance().getClientsAndAdresses());
 	}
 	
 	private void initFacturesComponents() {

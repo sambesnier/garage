@@ -6,6 +6,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+import javax.swing.table.DefaultTableModel;
+
 import com.mysql.jdbc.Connection;
 
 public class Database {
@@ -96,5 +98,39 @@ public class Database {
 				e1.printStackTrace();
 			}
 		}
+	}
+	
+	public DefaultTableModel getClientsAndAdresses() {
+		String[] headers = {
+				"Nom", "Prénom", "Email", "Num. voie", "Voie", "Code postal", "Ville"
+		};
+		DefaultTableModel model = new DefaultTableModel(headers, 0);
+		
+		Statement st;
+		try {
+			st = _connexion.createStatement();
+			String sql = "SELECT c.nom, c.prenom, c.email, a.num_voie, a.voie, a.code_postal, a.ville\r\n" + 
+					"FROM clients as c\r\n" + 
+					"INNER JOIN adresses as a\r\n" + 
+					"WHERE c.id_client = a.client";
+			ResultSet rs = st.executeQuery(sql);
+			
+			while(rs.next())
+			{
+			    String a = rs.getString("nom");
+			    String b = rs.getString("prenom");
+			    String c = rs.getString("email");
+			    String d = rs.getString("num_voie");
+			    String e = rs.getString("voie");
+			    String f = rs.getString("code_postal");
+			    String g = rs.getString("ville");
+			    model.addRow(new Object[]{a, b, c, d, e, f, g});
+			}
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return model;
 	}
 }
