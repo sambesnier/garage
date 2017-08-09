@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1
--- Généré le :  mer. 09 août 2017 à 11:31
+-- Généré le :  mer. 09 août 2017 à 11:33
 -- Version du serveur :  5.7.18-log
 -- Version de PHP :  7.1.4
 
@@ -42,7 +42,7 @@ CREATE TABLE `adresses` (
 --
 
 INSERT INTO `adresses` (`id_adresse`, `num_voie`, `voie`, `code_postal`, `ville`, `client`) VALUES
-(2, 16, 'Clos Picasso', 59310, 'Orchies', 2);
+(2, 16, 'avenue Pierre Mendes France', 59300, 'Lille', 2);
 
 -- --------------------------------------------------------
 
