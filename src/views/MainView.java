@@ -26,6 +26,8 @@ import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 import bdd.Database;
 import models.Prestation;
@@ -70,7 +72,7 @@ public class MainView extends JFrame {
 	public MainView() {
 		this.setTitle("Garage Manager");
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		this.setSize(800, 600);
+		this.setSize(800, 700);
 		this.setLocationRelativeTo(null);
 		initClientsComponents();
 		initFacturesComponents();
@@ -477,6 +479,12 @@ public class MainView extends JFrame {
 		_facturesContainer.add(_factRdvBtn, gc);
 		
 		_tabbedPane.addTab("Factures", _facturesContainer);
+		_tabbedPane.addChangeListener(new ChangeListener() {
+			@Override
+			public void stateChanged(ChangeEvent e) {
+				fillFactClientsTab();
+			}
+		});
 	}
 	
 	public JComboBox getPrestations() {
