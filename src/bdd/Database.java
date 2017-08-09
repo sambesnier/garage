@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+import javax.swing.JComboBox;
 import javax.swing.table.DefaultTableModel;
 
 import com.mysql.jdbc.Connection;
@@ -33,9 +34,9 @@ public class Database {
 	}
 	
 	private void connexion() {
-		String url = "jdbc:mysql://localhost:3306/gestion_garage";
+		String url = "jdbc:mysql://localhost:3306/gestion_garage_h";
 		String utilisateur = "root";
-		String motDePasse = "";
+		String motDePasse = "1234";
 		try {
 		    set_connexion((Connection) DriverManager.getConnection( url, utilisateur, motDePasse ));
 		    /* Ici, nous placerons nos requêtes vers la BDD */
@@ -100,6 +101,69 @@ public class Database {
 		}
 	}
 	
+	public void addCar(
+			String email, 
+			String marque, 
+			String modele, 
+			String couleur, 
+			int puissance, 
+			String immatriculation) {
+		String selectMarqueId = "SELECT id_marque FROM marques WHERE marque = ?";
+		String selectClientId = "SELECT id_client FROM clients WHERE email = ?";
+		String insertCar = "INSERT INTO voitures (marque_id, modele, couleur, puissance, immatriculation) VALUES (?,?,?,?,?)";
+		String insertCarClient = "INSERT INTO voiture_proprietaire (client_id, voiture_id) VALUES (?,?)";
+		
+		try {
+			long idClient = 0;
+			long idMarque = 0;
+			_connexion.setAutoCommit(false);
+			
+			PreparedStatement prstIdClient = _connexion.prepareStatement(selectClientId);
+			prstIdClient.setString(1, email);
+			ResultSet rs = prstIdClient.executeQuery();
+			if (rs.next()) {
+				idClient = rs.getLong("id_client");
+			}
+			
+			PreparedStatement prstIdMarque = _connexion.prepareStatement(selectMarqueId);
+			prstIdMarque.setString(1, marque);
+			ResultSet rsMarque = prstIdMarque.executeQuery();
+			if (rsMarque.next()) {
+				idMarque = rsMarque.getLong("id_marque");
+			}
+			
+			PreparedStatement prst = _connexion.prepareStatement(insertCar, Statement.RETURN_GENERATED_KEYS);
+			prst.setLong(1, idMarque);
+			prst.setString(2, modele);
+			prst.setString(3, couleur);
+			prst.setInt(4, puissance);
+			prst.setString(5, immatriculation);
+			prst.execute();
+			ResultSet rsAddCar = prst.getGeneratedKeys();
+			long idCar = 0;
+			if (rsAddCar.next()) {
+				idCar = rsAddCar.getLong(1);
+			}
+			
+			PreparedStatement prst2 = _connexion.prepareStatement(insertCarClient);
+			prst2.setLong(1, idClient);
+			prst2.setLong(2, idCar);
+			prst2.execute();
+			
+			_connexion.commit();
+			
+			prst.close();
+			prst2.close();
+		} catch (SQLException e) {
+			try {
+				e.printStackTrace();
+				_connexion.rollback();
+			} catch (SQLException e1) {
+				e1.printStackTrace();
+			}
+		}
+	}
+	
 	public DefaultTableModel getClientsAndAdresses() {
 		String[] headers = {
 				"Nom", "Prénom", "Email", "Num. voie", "Voie", "Code postal", "Ville"
@@ -132,6 +196,91 @@ public class Database {
 		}
 		
 		return model;
+	}
+	
+	public DefaultTableModel getClients() {
+		String[] headers = {
+				"Nom", "Prénom", "Email"
+		};
+		DefaultTableModel model = new DefaultTableModel(headers, 0);
+		
+		Statement st;
+		try {
+			st = _connexion.createStatement();
+			String sql = "SELECT c.nom, c.prenom, c.email\r\n" + 
+					"FROM clients as c";
+			ResultSet rs = st.executeQuery(sql);
+			
+			while(rs.next())
+			{
+			    String a = rs.getString("nom");
+			    String b = rs.getString("prenom");
+			    String c = rs.getString("email");
+			    model.addRow(new Object[]{a, b, c});
+			}
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return model;
+	}
+	
+	public DefaultTableModel getCarsByEmail(String email) {
+		String[] headers = {
+				"Marque", "Modèle", "Couleur", "Puissance", "Immatriculation"
+		};
+		DefaultTableModel model = new DefaultTableModel(headers, 0);
+
+		try {
+			String sql = "SELECT m.marque, v.modele, v.couleur, v.puissance, v.immatriculation\r\n" + 
+					"FROM voitures as v\r\n" + 
+					"INNER JOIN marques as m\r\n" + 
+					"INNER JOIN voiture_proprietaire as vp\r\n" + 
+					"INNER JOIN clients as c\r\n" + 
+					"WHERE m.id_marque = v.marque_id\r\n" + 
+					"AND v.id_voiture = vp.voiture_id\r\n" + 
+					"AND c.id_client = vp.client_id\r\n" + 
+					"AND c.email = ?";
+			PreparedStatement prst = _connexion.prepareStatement(sql);
+			prst.setString(1, email);
+			ResultSet rs = prst.executeQuery();
+			
+			while(rs.next())
+			{
+			    String a = rs.getString("marque");
+			    String b = rs.getString("modele");
+			    String c = rs.getString("couleur");
+			    int d = rs.getInt("puissance");
+			    String e = rs.getString("immatriculation");
+			    model.addRow(new Object[]{a, b, c, d, e});
+			}
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return model;
+	}
+	
+	public JComboBox getMarques() {
+		JComboBox marques = new JComboBox();
+		Statement st;
+		try {
+			st = _connexion.createStatement();
+			String sql = "SELECT marque FROM marques";
+			ResultSet rs = st.executeQuery(sql);
+			
+			while(rs.next())
+			{
+			    String a = rs.getString("marque");
+			    marques.addItem(a);
+			}
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return marques;
 	}
 	
 	public void deleteClient(String email) {

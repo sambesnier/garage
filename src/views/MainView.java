@@ -46,17 +46,18 @@ public class MainView extends JFrame {
 	// factures panel
 	private JPanel _facturesContainer = new JPanel();
 	private JLabel _factTitreLabel = new JLabel("Nouvelle facture");
-	private JButton _factTabClients = new JButton("clients");
-	private JButton _factTabVoitures = new JButton("voitures");
-	private JButton _factTabPrestas = new JButton("prestas");
+	private JTable _factTabClients = new JTable();
+	private JTable _factTabVoitures = new JTable();
+	private JTable _factTabPrestas = new JTable();
 	private JScrollPane _factClientsScroll;
 	private JScrollPane _factVoituresScroll;
 	private JScrollPane _factPrestasScroll;
 	private JButton _factNewCar = new JButton("Ajouter voiture");
+	private JButton _factDelCar = new JButton("Supprimer voiture");
 	private JButton _factAddPresta = new JButton("Ajouter prestation");
 	private JButton _factDelPresta = new JButton("Supprimer prestation");
 	private JLabel _factTotal = new JLabel("Total : ");
-	private JButton _factDevisPdf = new JButton("Devis PDF");
+	private JButton _factSaveDevis = new JButton("Enregistrer devis");
 	private JButton _factRdvBtn = new JButton("Prendre rdv");
 	
 	private String _email;
@@ -258,6 +259,14 @@ public class MainView extends JFrame {
 		_tableClients.setModel(Database.getInstance().getClientsAndAdresses());
 	}
 	
+	private void fillFactClientsTab() {
+		_factTabClients.setModel(Database.getInstance().getClients());
+	}
+	
+	private void fillFactCarTab(String email) {
+		_factTabVoitures.setModel(Database.getInstance().getCarsByEmail(email));
+	}
+	
 	private void initFacturesComponents() {
 		_facturesContainer.setLayout(new GridBagLayout());
 		GridBagConstraints gc = new GridBagConstraints();
@@ -283,22 +292,58 @@ public class MainView extends JFrame {
 //		gc.weighty = 0;
 //		_clientContainer.add(_addClientBtn, gc);
 		
+		fillFactClientsTab();
+		_factClientsScroll = new JScrollPane(_factTabClients);
 		gc.fill = GridBagConstraints.BOTH;
 		gc.gridx = 0;
 		gc.gridy = 1;
 		gc.gridheight = 2;
 		gc.gridwidth = 3;
 		gc.weightx = 0.2;
-		gc.weighty = 0.2;
-		_facturesContainer.add(_factTabClients, gc);
+		gc.weighty = 0.3;
+		_facturesContainer.add(_factClientsScroll, gc);
+		_factTabClients.addMouseListener(new MouseListener() {			
+			@Override
+			public void mouseReleased(MouseEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void mousePressed(MouseEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void mouseExited(MouseEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				if (_factTabClients.getSelectedRow() != -1) {
+					String email = _factTabClients.getValueAt(_factTabClients.getSelectedRow(), 2).toString();
+					fillFactCarTab(email);
+				}
+			}
+		});
 		
+		_factVoituresScroll = new JScrollPane(_factTabVoitures);
 		gc.gridx = 0;
 		gc.gridy = 3;
 		gc.gridheight = 2;
 		gc.gridwidth = 3;
 		gc.weightx = 0.2;
 		gc.weighty = 0.2;
-		_facturesContainer.add(_factTabVoitures, gc);
+		_facturesContainer.add(_factVoituresScroll, gc);
 		
 		gc.fill = GridBagConstraints.HORIZONTAL;
 		gc.ipady = gc.anchor = GridBagConstraints.FIRST_LINE_START;
@@ -307,8 +352,58 @@ public class MainView extends JFrame {
 		gc.gridheight = 1;
 		gc.gridwidth = 1;
 		gc.weightx = 0.2;
+		gc.weighty = 0;
 		_facturesContainer.add(_factNewCar, gc);
+		AddCar addCarDialog = new AddCar(this, "Ajouter une voiture", true);
+		addCarDialog.addComponentListener(new ComponentListener() {			
+			@Override
+			public void componentShown(ComponentEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void componentResized(ComponentEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void componentMoved(ComponentEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void componentHidden(ComponentEvent e) {
+				if (_factTabClients.getSelectedRow() != -1) {
+					String email = _factTabClients.getValueAt(_factTabClients.getSelectedRow(), 2).toString();
+					fillFactCarTab(email);
+				}
+			}
+		});
+		_factNewCar.addActionListener(new ActionListener() {			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (_factTabClients.getSelectedRow() != -1) {
+					String email = _factTabClients.getValueAt(_factTabClients.getSelectedRow(), 2).toString();
+					addCarDialog.set_email(email);
+					addCarDialog.setVisible(true);
+				}
+			}
+		});
 		
+//		gc.fill = GridBagConstraints.HORIZONTAL;
+//		gc.ipady = gc.anchor = GridBagConstraints.FIRST_LINE_START;
+//		gc.gridx = 4;
+//		gc.gridy = 4;
+//		gc.gridheight = 1;
+//		gc.gridwidth = 1;
+//		gc.weightx = 0.2;
+//		gc.weighty = 0;
+//		_facturesContainer.add(_factDelCar, gc);
+		
+		_factPrestasScroll = new JScrollPane(_factTabPrestas);
 		gc.fill = GridBagConstraints.BOTH;
 		gc.gridx = 0;
 		gc.gridy = 5;
@@ -316,7 +411,7 @@ public class MainView extends JFrame {
 		gc.gridwidth = 3;
 		gc.weightx = 0.2;
 		gc.weighty = 0.3;
-		_facturesContainer.add(_factTabPrestas, gc);
+		_facturesContainer.add(_factPrestasScroll, gc);
 		
 		gc.fill = GridBagConstraints.HORIZONTAL;
 		gc.ipady = gc.anchor = GridBagConstraints.FIRST_LINE_START;
@@ -349,7 +444,7 @@ public class MainView extends JFrame {
 		gc.gridwidth = 1;
 		gc.weightx = 0.2;
 		gc.weighty = 0;
-		_facturesContainer.add(_factDevisPdf, gc);
+		_facturesContainer.add(_factSaveDevis, gc);
 		
 		gc.gridx = 4;
 		gc.gridy = 9;
