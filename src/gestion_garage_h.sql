@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1
--- Généré le :  mar. 08 août 2017 à 18:52
--- Version du serveur :  10.1.24-MariaDB
--- Version de PHP :  7.1.6
+-- Généré le :  mer. 09 août 2017 à 11:31
+-- Version du serveur :  5.7.18-log
+-- Version de PHP :  7.1.4
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET AUTOCOMMIT = 0;
@@ -19,7 +19,7 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Base de données :  `gestion_garage`
+-- Base de données :  `gestion_garage_h`
 --
 
 -- --------------------------------------------------------
@@ -63,7 +63,7 @@ CREATE TABLE `clients` (
 --
 
 INSERT INTO `clients` (`id_client`, `nom`, `prenom`, `email`, `adresse_id`) VALUES
-(2, 'Besnier', 'Samuel', 'sbesnier1901@gmail.com', NULL);
+(2, 'Besnier', 'Samuel', 'samm2i@gmail.com', NULL);
 
 -- --------------------------------------------------------
 
@@ -91,6 +91,16 @@ CREATE TABLE `marques` (
   `marque` varchar(20) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+--
+-- Déchargement des données de la table `marques`
+--
+
+INSERT INTO `marques` (`id_marque`, `marque`) VALUES
+(1, 'Peugeot'),
+(2, 'Renault'),
+(3, 'BMW'),
+(4, 'Audi');
+
 -- --------------------------------------------------------
 
 --
@@ -103,6 +113,14 @@ CREATE TABLE `prestations` (
   `montant` decimal(10,2) NOT NULL,
   `duree` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Déchargement des données de la table `prestations`
+--
+
+INSERT INTO `prestations` (`id_prestation`, `prestation`, `montant`, `duree`) VALUES
+(1, 'Entretien', '180.00', 60),
+(2, 'Vidange', '110.00', 45);
 
 -- --------------------------------------------------------
 
@@ -142,6 +160,14 @@ CREATE TABLE `voitures` (
   `immatriculation` varchar(9) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+--
+-- Déchargement des données de la table `voitures`
+--
+
+INSERT INTO `voitures` (`id_voiture`, `marque_id`, `modele`, `puissance`, `couleur`, `immatriculation`) VALUES
+(1, 1, '308', 5, 'Bleue', 'AZ-194-QJ'),
+(5, 3, '118D', 7, 'Noire', 'SD-154-BG');
+
 -- --------------------------------------------------------
 
 --
@@ -152,6 +178,14 @@ CREATE TABLE `voiture_proprietaire` (
   `client_id` int(10) UNSIGNED NOT NULL,
   `voiture_id` int(10) UNSIGNED NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Déchargement des données de la table `voiture_proprietaire`
+--
+
+INSERT INTO `voiture_proprietaire` (`client_id`, `voiture_id`) VALUES
+(2, 1),
+(2, 5);
 
 --
 -- Index pour les tables déchargées
@@ -243,12 +277,12 @@ ALTER TABLE `factures`
 -- AUTO_INCREMENT pour la table `marques`
 --
 ALTER TABLE `marques`
-  MODIFY `id_marque` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id_marque` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 --
 -- AUTO_INCREMENT pour la table `prestations`
 --
 ALTER TABLE `prestations`
-  MODIFY `id_prestation` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id_prestation` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 --
 -- AUTO_INCREMENT pour la table `rdvs`
 --
@@ -258,7 +292,7 @@ ALTER TABLE `rdvs`
 -- AUTO_INCREMENT pour la table `voitures`
 --
 ALTER TABLE `voitures`
-  MODIFY `id_voiture` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id_voiture` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 --
 -- Contraintes pour les tables déchargées
 --

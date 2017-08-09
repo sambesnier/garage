@@ -5,11 +5,14 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 
 import javax.swing.JComboBox;
 import javax.swing.table.DefaultTableModel;
 
 import com.mysql.jdbc.Connection;
+
+import models.Prestation;
 
 public class Database {
 	
@@ -281,6 +284,29 @@ public class Database {
 			e.printStackTrace();
 		}
 		return marques;
+	}
+	
+	public ArrayList<Prestation> getPrestations() {
+		ArrayList<Prestation> prestas = new ArrayList<Prestation>();
+		Statement st;
+		try {
+			st = _connexion.createStatement();
+			String sql = "SELECT id_prestation, prestation, montant, duree FROM prestations";
+			ResultSet rs = st.executeQuery(sql);
+			
+			while(rs.next())
+			{
+			    String a = rs.getString("prestation");
+			    double b = rs.getDouble("montant");
+			    int c = rs.getInt("duree");
+			    long d = rs.getLong("id_prestation");
+ 			    prestas.add(new Prestation(a, b, c, d));
+			}
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return prestas;
 	}
 	
 	public void deleteClient(String email) {

@@ -13,6 +13,8 @@ import java.awt.event.ContainerEvent;
 import java.awt.event.ContainerListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.util.ArrayList;
+import java.util.Iterator;
 
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -26,6 +28,7 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 
 import bdd.Database;
+import models.Prestation;
 
 public class MainView extends JFrame {
 	private JPanel _clientContainer = new JPanel();
@@ -56,9 +59,11 @@ public class MainView extends JFrame {
 	private JButton _factDelCar = new JButton("Supprimer voiture");
 	private JButton _factAddPresta = new JButton("Ajouter prestation");
 	private JButton _factDelPresta = new JButton("Supprimer prestation");
+	private JComboBox _prestas;
 	private JLabel _factTotal = new JLabel("Total : ");
 	private JButton _factSaveDevis = new JButton("Enregistrer devis");
 	private JButton _factRdvBtn = new JButton("Prendre rdv");
+	private ArrayList<Prestation> _prestasArray = new ArrayList<Prestation>();
 	
 	private String _email;
 	
@@ -407,7 +412,7 @@ public class MainView extends JFrame {
 		gc.fill = GridBagConstraints.BOTH;
 		gc.gridx = 0;
 		gc.gridy = 5;
-		gc.gridheight = 2;
+		gc.gridheight = 3;
 		gc.gridwidth = 3;
 		gc.weightx = 0.2;
 		gc.weighty = 0.3;
@@ -415,13 +420,15 @@ public class MainView extends JFrame {
 		
 		gc.fill = GridBagConstraints.HORIZONTAL;
 		gc.ipady = gc.anchor = GridBagConstraints.FIRST_LINE_START;
+		
 		gc.gridx = 4;
 		gc.gridy = 5;
 		gc.gridheight = 1;
 		gc.gridwidth = 1;
 		gc.weightx = 0.2;
 		gc.weighty = 0;
-		_facturesContainer.add(_factAddPresta, gc);
+		_prestas = getPrestations();
+		_facturesContainer.add(_prestas, gc);
 		
 		gc.gridx = 4;
 		gc.gridy = 6;
@@ -429,17 +436,33 @@ public class MainView extends JFrame {
 		gc.gridwidth = 1;
 		gc.weightx = 0.2;
 		gc.weighty = 0;
+		_facturesContainer.add(_factAddPresta, gc);
+		_factAddPresta.addActionListener(new ActionListener() {		
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (_factTabVoitures.getSelectedRow() != -1) {
+					
+				}
+			}
+		});
+		
+		gc.gridx = 4;
+		gc.gridy = 7;
+		gc.gridheight = 1;
+		gc.gridwidth = 1;
+		gc.weightx = 0.2;
+		gc.weighty = 0;
 		_facturesContainer.add(_factDelPresta, gc);
 		
 		gc.gridx = 0;
-		gc.gridy = 7;
+		gc.gridy = 8;
 		gc.gridheight = 1;
 		gc.gridwidth = 1;
 		gc.weightx = 0.3;
 		_facturesContainer.add(_factTotal, gc);
 		
 		gc.gridx = 4;
-		gc.gridy = 8;
+		gc.gridy = 9;
 		gc.gridheight = 1;
 		gc.gridwidth = 1;
 		gc.weightx = 0.2;
@@ -447,12 +470,24 @@ public class MainView extends JFrame {
 		_facturesContainer.add(_factSaveDevis, gc);
 		
 		gc.gridx = 4;
-		gc.gridy = 9;
+		gc.gridy = 10;
 		gc.gridheight = 1;
 		gc.gridwidth = 1;
 		gc.weightx = 0.2;
 		_facturesContainer.add(_factRdvBtn, gc);
 		
 		_tabbedPane.addTab("Factures", _facturesContainer);
+	}
+	
+	public JComboBox getPrestations() {
+		_prestasArray = Database.getInstance().getPrestations();
+		JComboBox comboPresta = new JComboBox();
+		
+		for (Iterator iterator = _prestasArray.iterator(); iterator.hasNext();) {
+			Prestation prestation = (Prestation) iterator.next();
+			comboPresta.addItem(prestation.get_prestation());
+		}
+		
+		return comboPresta;
 	}
 }
